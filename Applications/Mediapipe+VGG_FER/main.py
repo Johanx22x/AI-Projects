@@ -3,6 +3,7 @@ import cv2
 import numpy as np
 import mediapipe as mp
 from emotion_utils import *
+from time import perf_counter
 
 
 def init() -> tuple:
@@ -42,7 +43,19 @@ def show_webcam(face_detection: mp.solutions.face_detection.FaceDetection,
     cap = cv2.VideoCapture(0)
     ret, frame = cap.read()
     while ret:
+        t1_start = perf_counter()
         frame = get_prediction(frame, face_detection, emotion_model)
+        t1_stop = perf_counter()
+        cv2.putText(
+            frame,
+            f"FPS: {int(1/(t1_stop-t1_start))}",
+            (10, 30),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            1,
+            (0, 255, 0),
+            2,
+            cv2.LINE_AA,
+        )
         cv2.imshow("frame", frame)
         if cv2.waitKey(1) == ord("q"):
             break
