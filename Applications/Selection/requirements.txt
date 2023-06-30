@@ -1,0 +1,8 @@
+retina-face
+dlib
+tensorflow
+IPython
+mtcnn
+opencv-python
+mediapipe
+yoloface
