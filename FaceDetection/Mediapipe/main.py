@@ -5,7 +5,7 @@ import mediapipe as mp
 mp_face_detection = mp.solutions.face_detection
 
 # Load image 
-img = cv2.imread("../data/people.jpg")
+img = cv2.imread("../data/selfie.png")
 
 with mp_face_detection.FaceDetection( model_selection=1, min_detection_confidence=0.5) as face_detection:
 
@@ -28,6 +28,6 @@ with mp_face_detection.FaceDetection( model_selection=1, min_detection_confidenc
             # Draw bounding box
             img = cv2.rectangle(img, (x1, y1), (x1 + w, y1 + h), (0, 255, 0), 2)
 
-    cv2.imshow("Image", img)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+    # cv2.imshow("Image", img)
+    # cv2.waitKey(0)
+    # cv2.destroyAllWindows()

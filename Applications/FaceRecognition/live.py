@@ -3,6 +3,11 @@ import cv2
 import sqlite3
 import numpy as np
 from time import perf_counter
+from datetime import datetime
+
+
+tracked = {}
+TIMEOUT = 10
 
 
 def get_database_faces() -> list:
@@ -39,6 +44,17 @@ def draw_fps(frame, t1_start, t1_stop) -> None:
         2,
         cv2.LINE_AA,
     )
+
+
+def track(person: str, person_encoding: np.ndarray) -> None:
+    if tuple(person_encoding) in tracked.keys():
+        if (datetime.now() - tracked[tuple(person_encoding)]).seconds > TIMEOUT:
+            tracked[tuple(person_encoding)] = datetime.now()
+            print(f"LOG: Person {person} entered at {datetime.now()}")
+        return
+
+    tracked[tuple(person_encoding)] = datetime.now()
+    print(f"LOG: Person {person} entered at {datetime.now()}")
 
 
 def live() -> None:
@@ -84,10 +100,27 @@ def live() -> None:
                 # Get the name of the match 
                 match_name = list(faces.keys())[match_index]
 
+                # Track the match 
+                track(match_name, list(faces.values())[match_index])
+
                 # Draw the name of the match on the frame
                 cv2.putText(
                     frame,
                     match_name,
+                    (left, top - 10),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    1,
+                    (0, 0, 255),
+                    2,
+                    cv2.LINE_AA,
+                )
+            else:
+                track("Unknown", "Unknown")
+
+                # Draw unknown on the frame
+                cv2.putText(
+                    frame,
+                    "Unknown",
                     (left, top - 10),
                     cv2.FONT_HERSHEY_SIMPLEX,
                     1,
